@@ -28,28 +28,15 @@ users_data = pd.DataFrame({
 
 # Sidebar with options
 st.sidebar.header('Analysis Options')
-analysis_option = st.sidebar.selectbox('Select Analysis:', ('Average Weight and Height', 'BMI Distribution',
-                                                           'Weight and Height Trends', 'Correlation Analysis',
-                                                           'Goals Progress Tracking', 'Comparison with Norms',
+analysis_option = st.sidebar.selectbox('Select Analysis:', ('BMI Distribution',
+                                                           'Correlation Analysis',
+                                                           'Comparison with Norms',
                                                            'User Profiles and Recommendations','BMI Improvement'))
 
 # Main content based on selected option
 st.title('Campus Health and Wellness Analytics')
 
-if analysis_option == 'Average Weight and Height':
-    st.header('Average Weight and Height Analysis')
-    avg_weight = users_data['Weight_kg'].mean()
-    avg_height = users_data['Height_cm'].mean()
-    st.write(f"Average Weight: {avg_weight:.2f} kg")
-    st.write(f"Average Height: {avg_height:.2f} cm")
-
-    # Visualize average weight and height
-    fig, ax = plt.subplots()
-    ax.bar(['Average Weight', 'Average Height'], [avg_weight, avg_height])
-    st.pyplot(fig)
-
-
-elif analysis_option == 'BMI Distribution':
+if analysis_option == 'BMI Distribution':
     st.header('BMI Distribution Analysis')
     users_data['BMI'] = users_data['Weight_kg'] / ((users_data['Height_cm'] / 100) ** 2)
 
@@ -60,29 +47,16 @@ elif analysis_option == 'BMI Distribution':
     st.pyplot(fig)
 
 
-elif analysis_option == 'Weight and Height Trends':
-    st.header('Weight and Height Trends Over Time')
-    # Generate dummy time series data for weight and height trends
-    time_series_data = pd.DataFrame({
-        'Date': pd.date_range(start='2022-01-01', periods=365),
-        'Weight_kg': np.random.uniform(50, 120, 365),
-        'Height_cm': np.random.uniform(150, 200, 365)
-    })
-    time_series_data.set_index('Date', inplace=True)
-
-    # Visualize weight and height trends over time
-    st.write('Weight and Height Trends Over Time')
-    st.line_chart(time_series_data)
-
-# Repeat the same pattern for the remaining analysis options
-
 elif analysis_option == 'Correlation Analysis':
     st.header('Correlation Between Weight/Height and Other Metrics')
 
     # Generate dummy data for other health-related metrics
-    users_data['Fitness_Level'] = np.random.randint(1, 11, num_users)  # Dummy fitness level data (1-10 scale)
-    users_data['Mental_Health_Score'] = np.random.randint(1, 11, num_users)  # Dummy mental health score data (1-10 scale)
-    users_data['Diet_Habits'] = np.random.choice(['Healthy', 'Moderate', 'Unhealthy'], num_users)  # Dummy diet habits data
+    num_rows = len(users_data)
+    users_data['Fitness_Level'] = np.random.randint(1, 11, num_rows)  # Dummy fitness level data (1-10 scale)
+    users_data['Mental_Health_Score'] = np.random.randint(1, 11,
+                                                          num_rows)  # Dummy mental health score data (1-10 scale)
+    users_data['Diet_Habits'] = np.random.choice(['Healthy', 'Moderate', 'Unhealthy'],
+                                                 num_rows)  # Dummy diet habits data
 
     # Calculate correlation matrix
     correlation_matrix = users_data[['Weight_kg', 'Height_cm', 'Fitness_Level', 'Mental_Health_Score']].corr()
@@ -93,23 +67,6 @@ elif analysis_option == 'Correlation Analysis':
     sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', ax=ax)
     st.pyplot(fig)
 
-
-elif analysis_option == 'Goals Progress Tracking':
-    st.header('Weight and Height Goals Progress Tracking')
-
-    # Generate dummy data for goals progress tracking
-    users_data['Weight_Goal_kg'] = np.random.uniform(50, 100, num_users)  # Dummy weight goal data
-    users_data['Height_Goal_cm'] = np.random.uniform(160, 190, num_users)  # Dummy height goal data
-
-    # Visualize goals progress tracking
-    st.write('Weight and Height Goals Progress Tracking')
-    fig, ax = plt.subplots()
-    ax.scatter(users_data['Weight_kg'], users_data['Height_cm'], label='Actual Data')
-    ax.scatter(users_data['Weight_Goal_kg'], users_data['Height_Goal_cm'], color='red', label='Goal Data')
-    ax.set_xlabel('Weight (kg)')
-    ax.set_ylabel('Height (cm)')
-    ax.legend()
-    st.pyplot(fig)
 
 elif analysis_option == 'Comparison with Norms':
     st.header('Comparison with Population Norms')
@@ -133,8 +90,9 @@ elif analysis_option == 'User Profiles and Recommendations':
     st.header('User Profiles and Health Recommendations')
 
     # Generate dummy data for user profiles and recommendations
+    num_rows = len(users_data)
     users_data['Health_Recommendations'] = np.random.choice(['Increase Physical Activity', 'Improve Diet Habits',
-                                                             'Engage in Mindfulness Activities'], num_users)
+                                                             'Engage in Mindfulness Activities'], num_rows)
 
     # Visualize user profiles and recommendations
     st.write('User Health Recommendations')
